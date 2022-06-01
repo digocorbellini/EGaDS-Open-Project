@@ -1,13 +1,11 @@
-_Please delete the questions below, and type the answers in their place instead_
+_Please delete the text below and this text and replace it with your answers. Reminder: This format is just a recommendation, so feel free to further explain your changes if answering these questions does not allow you to properly do so._
 
-**[for Generic PRs]**  
-Do you have a forum thread linked to this PR?  
-What will this PR bring to the project for everyone?  
-Why are these changes necessary?  
-How did you implement them?  
+**[for generic pull requests]**  
+- Is this pull request tied to a task on the trello? If so, link the task. 
+- What will this pull request bring to the project for everyone?  
+- (for code) How did you implement your solution?  
 
-**[for Bugfix PRs]**  
-Is this PR linked to an issue? If so please link it here, if not please create one first, then link it.  
-Is there a forum thread linked to this issue? If so please link it here.  
-How did you resolve this issue?  
-How can it be verified that the issue has actually been resolved?  
+**[for Bugfix pull requests]**  
+- Is this pull request tied to a task on the trello? If so, link the task. If not, ask for it to be created on the Discord. 
+- How did you resolve this issue?  
+- How can it be verified that the issue has actually been resolved?  
