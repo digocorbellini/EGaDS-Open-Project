@@ -12,3 +12,4 @@ _Please delete the text below and this text and replace it with your answers. Re
 * What is your suggestion? (Design, feature, art asset, mechanic, etc.)
 * How does this feature fit into the game? 
 * How will the game benefit from this feature?
+* Any diagrams or concept art if applicable
