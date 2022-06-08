@@ -1,7 +1,7 @@
 ---
 name: Exception from Contribution Rules
 about: Requesting an exemption from contribution rules
-title: Requesting an exemption from contribution rules
+title: "[Requesting an exemption from contribution rules]"
 labels: exemption from rules
 assignees: ''
 
