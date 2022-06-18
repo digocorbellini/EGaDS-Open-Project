@@ -22,3 +22,4 @@ We welcome any and all contributions to the project! If you want to contribute, 
 * [Contribution Guidelines](https://docs.google.com/document/d/1DZozu0u70hxBnDOD2t4HZRl1vImHgz4Qn5kXoye3JYg/edit?usp=sharing) - Guide on what and how you can contribute to the project
 * [Project Conventions](https://docs.google.com/document/d/1pTduWdvOSmrJ0DgHnYp3mi-DqtcyQTU5AUx_PzsaUfw/edit?usp=sharing) - Information on project file naming conventions, folder structure, and code style
 * [Trello Board](https://trello.com/b/2tL6Xj9L/egads-open-project) - List of tasks for contributors to undertake
+* [Game Design Document](https://docs.google.com/document/d/17vMP-K1zjCm01-UGvRhyFIhqtR1TbtZYAKKdN58kHH0/edit?usp=sharing) - Information about the general vision of the game
