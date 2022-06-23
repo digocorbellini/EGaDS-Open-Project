@@ -1,11 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class Ability : ScriptableObject
 {
     private int _slotIndex = -1;
 
+    /// <summary>
+    /// The slot index this ability is held in.
+    /// If equal to -1, then the ability is not in a slot
+    /// </summary>
     public int SlotIndex => _slotIndex;
 
     /// <summary>
@@ -24,7 +26,8 @@ public abstract class Ability : ScriptableObject
     /// Get key code corresponding to the slot this ability is in, 
     /// or KeyCode.None if not in a slot
     /// </summary>
-    private KeyCode GetKeyCode() {
+    private KeyCode GetKeyCode() 
+    {
         if (SlotIndex < 0) return KeyCode.None;
         if (IsPassive) return AbilityManager.passiveAbilityKeyCodes[_slotIndex];
         else return AbilityManager.abilityKeyCodes[_slotIndex];
