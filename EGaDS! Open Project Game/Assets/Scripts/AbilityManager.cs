@@ -5,6 +5,12 @@ using UnityEngine;
 
 public class AbilityManager : MonoBehaviour
 {
+    public static KeyCode[] abilityKeyCodes = {
+        KeyCode.H, KeyCode.J, KeyCode.K, KeyCode.L,
+    };
+    public static KeyCode[] passiveAbilityKeyCodes = {
+        KeyCode.U, KeyCode.I, KeyCode.O, KeyCode.P,
+    };
 
     private List<Ability> abilities = new List<Ability>();
     private PlayerComponents player;
@@ -45,9 +51,9 @@ public class AbilityManager : MonoBehaviour
     }
 
     public double GetSpeedMultiplier() => 
-        abilities.Aggregate(1.0, (prod, ability) => prod * ability.GetSpeedMultiplier());
+        abilities.Aggregate(1.0, (prod, ability) => prod * ability.SpeedMultiplier);
 
-    public double GetJumpHeightMultiplier() => 
-        abilities.Aggregate(1.0, (prod, ability) => prod * ability.GetJumpHeightMultiplier());
+    public double GetJumpHeightAddend() => 
+        abilities.Aggregate(0.0, (sum, ability) => sum + ability.JumpHeightAddend);
 
 }
