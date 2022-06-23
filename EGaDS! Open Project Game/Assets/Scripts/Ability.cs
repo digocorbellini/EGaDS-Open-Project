@@ -23,14 +23,22 @@ public abstract class Ability : ScriptableObject
     }
 
     /// <summary>
+    /// Called to signal that the ability has been removed from the player
+    /// </summary>
+    public void End()
+    {
+        _slotIndex = -1;
+    }
+
+    /// <summary>
     /// Get key code corresponding to the slot this ability is in, 
     /// or KeyCode.None if not in a slot
     /// </summary>
     private KeyCode GetKeyCode() 
     {
         if (SlotIndex < 0) return KeyCode.None;
-        if (IsPassive) return AbilityManager.passiveAbilityKeyCodes[_slotIndex];
-        else return AbilityManager.abilityKeyCodes[_slotIndex];
+        if (IsPassive) return AbilityManager.PASSIVE_ABILITY_KEY_CODES[_slotIndex];
+        else return AbilityManager.ABILITY_KEY_CODES[_slotIndex];
     }
 
     /// <summary>
