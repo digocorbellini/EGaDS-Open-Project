@@ -26,10 +26,11 @@ public class PlayerMovement : MonoBehaviour
         transform.position += new Vector3(movement, 0, 0) * Time.deltaTime * MovementSpeed;
 
         bool isGrounded() 
-    {
-            RaycastHit2D raycastHit = Physics2D.Raycast(collider.bounds.center, Vector2.down, collider.bounds.extents.y, groundLayerMask);
+        {
+            RaycastHit2D raycastHit = Physics2D.Raycast(collider.bounds.center, Vector2.down, collider.bounds.extents.y*1.2f, groundLayerMask);
+
             
-            if (raycastHit.collider != null)
+            if (raycastHit.collider == null)
             {
                 return (false);
             }
@@ -37,8 +38,8 @@ public class PlayerMovement : MonoBehaviour
             {
                 return (true);
             }
-            
-    }
+                
+        }
 
         if (Input.GetButtonDown("Jump") && isGrounded()) 
         {
