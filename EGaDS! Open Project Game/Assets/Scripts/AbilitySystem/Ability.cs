@@ -4,11 +4,37 @@ public abstract class Ability : ScriptableObject
 {
     private int _slotIndex = -1;
 
+    [SerializeField] private bool _isPassive = false;
+    [SerializeField] private float _speedMultiplier = 1.0f;
+    [SerializeField] private float _jumpHeightAddend = 0.0f;
+    [SerializeField] private float _fallSpeedMultiplier = 1.0f;
+
     /// <summary>
     /// The slot index this ability is held in.
     /// If equal to -1, then the ability is not in a slot
     /// </summary>
     public int SlotIndex => _slotIndex;
+
+    /// <summary>
+    /// Abilities are grouped together depending on the value of IsPassive,
+    /// with separate maximum number of abilities a player can hold per group.
+    /// </summary>
+    public bool IsPassive => _isPassive;
+
+    /// <summary>
+    /// Multiplier applied to player left-right movement speed, in tiles per second.
+    /// </summary>
+    public float SpeedMultiplier => _speedMultiplier;
+
+    /// <summary>
+    /// Number of tiles added to player jump height.
+    /// </summary>
+    public float JumpHeightAddend => _jumpHeightAddend;
+
+    /// <summary>
+    /// Multiplier applied to the maximum speed the player falls at, in tiles per second.
+    /// </summary>
+    public float FallSpeedMultiplier => _fallSpeedMultiplier;
 
     /// <summary>
     /// Called to signal that the ability has been added to the player
@@ -58,28 +84,6 @@ public abstract class Ability : ScriptableObject
     /// releases the key corresponding to this ability.
     /// </summary>
     public bool GetKeyUp() => Input.GetKeyUp(GetKeyCode());
-
-    /// <summary>
-    /// Abilities are grouped together depending on the value of IsPassive,
-    /// with separate maximum number of abilities a player can hold per group.
-    /// <para>Defaults to <c>false</c>.</para>
-    /// </summary>
-    public bool IsPassive = false;
-
-    /// <summary>
-    /// Multiplier applied to player left-right movement speed, in tiles per second.
-    /// </summary>
-    public double SpeedMultiplier = 1.0;
-
-    /// <summary>
-    /// Number of tiles added to player jump height.
-    /// </summary>
-    public double JumpHeightAddend = 0.0;
-
-    /// <summary>
-    /// Multiplier applied to the maximum speed the player falls at, in tiles per second.
-    /// </summary>
-    public double FallSpeedMultiplier = 1.0;
 
     /////////////////////////////////////////////////////////////////
     // Virtual methods start here
