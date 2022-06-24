@@ -30,16 +30,41 @@ public class AbilityManager : MonoBehaviour
     private Ability _focus;
 
     /// <summary>
-    /// The ability to focus on. When this is set, calls to Update() and 
-    /// FixedUpdate() of all other abilities will be blocked.
+    /// Acquire the focus on the passed in ability. When this is set, calls to 
+    /// AbilityUpdate() and AbilityFixedUpdate() of all other abilities will be blocked.
     /// </summary>
-    public Ability Focus 
-    { 
-        get => _focus; 
-        // don't allow focus to change when there is currently a focus
-        // in order to prevent unexpected behavior with abilities
-        set { if (_focus == null) _focus = value; }
+    /// <param name="ability">The ability that is acquiring the focus</param>
+    /// <returns>True if the ability successfuly acquired the focus and 
+    /// false otherwise.</returns>
+    public bool AcquireFocus(Ability ability)
+    {
+        bool focusAcquired = true;
+        if (_focus == null)
+            _focus = ability;
+        else
+            focusAcquired = false;
+
+        return focusAcquired;
     }
+
+    /// <summary>
+    /// Unacquire the focus on the passed in ability. All abilities will be able to have their
+    /// AbilityUpdate() and AbilityFixedUpdate() methods called by the ability manager.
+    /// </summary>
+    /// <param name="ability">The ability that is unacquiring the focus</param>
+    /// <returns>True if the ability successfuly unacquired the focus and 
+    /// false otherwise.</returns>
+    public bool UnacquireFocus(Ability ability)
+    {
+        bool focusUnacquired = true;
+        if (_focus == ability)
+            _focus = null;
+        else
+            focusUnacquired = false;
+
+        return focusUnacquired;
+    }
+
 
 
     // Start is called before the first frame update
@@ -51,7 +76,7 @@ public class AbilityManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Focus == null) // if no focus, then call Update() of all abilities
+        if (_focus == null) // if no focus, then call Update() of all abilities
         {
             foreach (Ability ability in _abilities)
                 ability?.AbilityUpdate(player);
@@ -60,13 +85,13 @@ public class AbilityManager : MonoBehaviour
                 ability?.AbilityUpdate(player);
         }
         else // otherwise only call Update() of focus
-            Focus.AbilityUpdate(player);
+            _focus.AbilityUpdate(player);
     }
 
     // called once every fixed frame-rate frame defined by physics engine
     void FixedUpdate()
     {
-        if (Focus == null) // if no focus, then call FixedUpdate() of all abilities
+        if (_focus == null) // if no focus, then call FixedUpdate() of all abilities
         {
             foreach (Ability ability in _abilities)
                 ability?.AbilityFixedUpdate(player);
@@ -75,7 +100,7 @@ public class AbilityManager : MonoBehaviour
                 ability?.AbilityFixedUpdate(player);
         }
         else // otherwise only call FixedUpdate() of focus
-            Focus.AbilityFixedUpdate(player);
+            _focus.AbilityFixedUpdate(player);
     }
 
 
