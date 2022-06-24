@@ -16,10 +16,10 @@ public abstract class Ability : ScriptableObject
     /// </summary>
     /// <param name="player">The components of the player the ability has been added to.</param>
     /// <param name="slotIndex">The slot index the ability has been added to.</param>
-    public void Start(PlayerComponents player, int slotIndex) 
+    public void AbilityStart(PlayerComponents player, int slotIndex) 
     {
         _slotIndex = slotIndex;
-        Start(player);
+        AbilityStart(player);
     }
 
     /// <summary>
@@ -69,7 +69,7 @@ public abstract class Ability : ScriptableObject
     /// with separate maximum number of abilities a player can hold per group.
     /// <para>Defaults to <c>false</c>.</para>
     /// </summary>
-    public virtual bool IsPassive => false;
+    public bool IsPassive = false;
 
     /// <summary>
     /// Multiplier applied to player left-right movement speed, in tiles per second.
@@ -91,14 +91,14 @@ public abstract class Ability : ScriptableObject
     /// Once this is called, <c>Update()</c> and <c>FixedUpdate()</c> will begin to be called.
     /// </summary>
     /// <param name="player">The components held by the player</param>
-    public virtual void Start(PlayerComponents player) {}
+    public virtual void AbilityStart(PlayerComponents player) {}
 
     /// <summary>
     /// Called every frame when the ability is held by the player.
     /// 
     /// </summary>
     /// <param name="player">The components held by the player</param>
-    public virtual void Update(PlayerComponents player) {}
+    public virtual void AbilityUpdate(PlayerComponents player) {}
 
     /// <summary>
     /// Called every fixed frame-rate frame defined by the physics system.
@@ -106,5 +106,5 @@ public abstract class Ability : ScriptableObject
     /// at a fixed frequency not dependent on user frame-rate.
     /// </summary>
     /// <param name="player">The components held by the player</param>
-    public virtual void FixedUpdate(PlayerComponents player) {}
+    public virtual void AbilityFixedUpdate(PlayerComponents player) {}
 }

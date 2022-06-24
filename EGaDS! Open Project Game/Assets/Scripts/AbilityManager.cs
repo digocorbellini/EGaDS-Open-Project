@@ -52,22 +52,30 @@ public class AbilityManager : MonoBehaviour
     void Update()
     {
         if (Focus == null) // if no focus, then call Update() of all abilities
+        {
             foreach (Ability ability in _abilities)
-                ability?.Update(player);
+                ability?.AbilityUpdate(player);
 
+            foreach (Ability ability in _passiveAbilities)
+                ability?.AbilityUpdate(player);
+        }
         else // otherwise only call Update() of focus
-            Focus.Update(player);
+            Focus.AbilityUpdate(player);
     }
 
     // called once every fixed frame-rate frame defined by physics engine
     void FixedUpdate()
     {
         if (Focus == null) // if no focus, then call FixedUpdate() of all abilities
+        {
             foreach (Ability ability in _abilities)
-                ability?.FixedUpdate(player);
+                ability?.AbilityFixedUpdate(player);
 
+            foreach (Ability ability in _passiveAbilities)
+                ability?.AbilityFixedUpdate(player);
+        }
         else // otherwise only call FixedUpdate() of focus
-            Focus.FixedUpdate(player);
+            Focus.AbilityFixedUpdate(player);
     }
 
 
@@ -93,11 +101,11 @@ public class AbilityManager : MonoBehaviour
 
         // check if player already has the ability
         foreach (Ability a in abilities)
-            if (ability.GetType() == a.GetType())
+            if (ability.GetType() == a?.GetType())
                 return false;
 
-        ability.Start(player, slotIndex);
-        abilities.Add(ability);
+        ability.AbilityStart(player, slotIndex);
+        abilities[slotIndex] = ability;
         return true;
     }
 
@@ -155,7 +163,7 @@ public class AbilityManager : MonoBehaviour
         }
         else if (count > abilities.Count) // add empty ability slots
         {
-            abilities.AddRange(new List<Ability>(new Ability[abilities.Count - count]));
+            abilities.AddRange(new List<Ability>(new Ability[count - abilities.Count]));
             return new List<Ability>();
         }
         return new List<Ability>();
