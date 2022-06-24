@@ -59,11 +59,6 @@ public abstract class Ability : ScriptableObject
     /// </summary>
     public bool GetKeyUp() => Input.GetKeyUp(GetKeyCode());
 
-
-    /////////////////////////////////////////////////////////////////
-    // Virtual properties and methods start here
-
-
     /// <summary>
     /// Abilities are grouped together depending on the value of IsPassive,
     /// with separate maximum number of abilities a player can hold per group.
@@ -74,17 +69,20 @@ public abstract class Ability : ScriptableObject
     /// <summary>
     /// Multiplier applied to player left-right movement speed, in tiles per second.
     /// </summary>
-    public virtual double SpeedMultiplier => 1.0;
+    public double SpeedMultiplier = 1.0;
 
     /// <summary>
     /// Number of tiles added to player jump height.
     /// </summary>
-    public virtual double JumpHeightAddend => 0.0;
+    public double JumpHeightAddend = 0.0;
 
     /// <summary>
     /// Multiplier applied to the maximum speed the player falls at, in tiles per second.
     /// </summary>
-    public virtual double FallSpeedMultiplier => 1.0;
+    public double FallSpeedMultiplier = 1.0;
+
+    /////////////////////////////////////////////////////////////////
+    // Virtual methods start here
 
     /// <summary>
     /// Called when the player obtains the ability. 
@@ -95,7 +93,6 @@ public abstract class Ability : ScriptableObject
 
     /// <summary>
     /// Called every frame when the ability is held by the player.
-    /// 
     /// </summary>
     /// <param name="player">The components held by the player</param>
     public virtual void AbilityUpdate(PlayerComponents player) {}
