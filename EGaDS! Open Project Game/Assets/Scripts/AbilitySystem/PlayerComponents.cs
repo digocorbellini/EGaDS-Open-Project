@@ -4,21 +4,21 @@ using UnityEngine;
 
 public struct PlayerComponents
 {
-    public PlayerMovement Movement { get; }
-    public Collider2D Collider { get; }
-    public Rigidbody2D Rigidbody { get; }
-    public AbilityManager AbilityManager { get; }
-    public Transform PlayerTransform { get; }
-    public GameObject PlayerObject { get;  }
+    public PlayerMovement movement { get; }
+    public Collider2D collider { get; }
+    public Rigidbody2D rigidbody { get; }
+    public AbilityManager abilityManager { get; }
+    public Transform transform { get; }
+    public GameObject gameObject { get;  }
     // TODO: add sprite renderer and animator
 
     public PlayerComponents(GameObject player) 
     {
-        Movement = player.GetComponent<PlayerMovement>();
-        Collider = player.GetComponent<Collider2D>();
-        Rigidbody = player.GetComponent<Rigidbody2D>();
-        AbilityManager = player.GetComponent<AbilityManager>();
-        PlayerTransform = player.transform;
-        PlayerObject = player;
+        movement = player.GetComponent<PlayerMovement>();
+        collider = player.GetComponent<Collider2D>();
+        rigidbody = player.GetComponent<Rigidbody2D>();
+        abilityManager = player.GetComponent<AbilityManager>();
+        transform = player.transform;
+        gameObject = player;
     }
 }

@@ -42,7 +42,7 @@ public abstract class Ability : ScriptableObject
     /// </summary>
     /// <param name="player">The components of the player the ability has been added to.</param>
     /// <param name="slotIndex">The slot index the ability has been added to.</param>
-    public void AbilityStart(PlayerComponents player, int slotIndex) 
+    public void SetAdded(PlayerComponents player, int slotIndex) 
     {
         _slotIndex = slotIndex;
         AbilityStart(player);
@@ -51,9 +51,11 @@ public abstract class Ability : ScriptableObject
     /// <summary>
     /// Called to signal that the ability has been removed from the player
     /// </summary>
-    public void End()
+    /// <param name="player">The components of the player the ability has been removed from.</param>
+    public void SetRemoved(PlayerComponents player)
     {
         _slotIndex = -1;
+        AbilityEnd(player);
     }
 
     /// <summary>
@@ -108,4 +110,10 @@ public abstract class Ability : ScriptableObject
     /// </summary>
     /// <param name="player">The components held by the player</param>
     public virtual void AbilityFixedUpdate(PlayerComponents player) {}
+
+    /// <summary>
+    /// Called when the player loses the ability
+    /// </summary>
+    /// <param name="player">The components held by the player</param>
+    public virtual void AbilityEnd(PlayerComponents player) {}
 }

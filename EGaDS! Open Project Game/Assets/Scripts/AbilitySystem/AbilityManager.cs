@@ -25,7 +25,7 @@ public class AbilityManager : MonoBehaviour
     /// <summary>
     /// holds a reference to all player components (queried in <c>Start()</c>)
     /// </summary>
-    private PlayerComponents player;
+    private PlayerComponents _player;
 
     private Ability _focus;
 
@@ -70,7 +70,7 @@ public class AbilityManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        player = new PlayerComponents(gameObject);
+        _player = new PlayerComponents(gameObject);
     }
 
     // Update is called once per frame
@@ -79,13 +79,13 @@ public class AbilityManager : MonoBehaviour
         if (_focus == null) // if no focus, then call Update() of all abilities
         {
             foreach (Ability ability in _abilities)
-                ability?.AbilityUpdate(player);
+                ability?.AbilityUpdate(_player);
 
             foreach (Ability ability in _passiveAbilities)
-                ability?.AbilityUpdate(player);
+                ability?.AbilityUpdate(_player);
         }
         else // otherwise only call Update() of focus
-            _focus.AbilityUpdate(player);
+            _focus.AbilityUpdate(_player);
     }
 
     // called once every fixed frame-rate frame defined by physics engine
@@ -94,13 +94,13 @@ public class AbilityManager : MonoBehaviour
         if (_focus == null) // if no focus, then call FixedUpdate() of all abilities
         {
             foreach (Ability ability in _abilities)
-                ability?.AbilityFixedUpdate(player);
+                ability?.AbilityFixedUpdate(_player);
 
             foreach (Ability ability in _passiveAbilities)
-                ability?.AbilityFixedUpdate(player);
+                ability?.AbilityFixedUpdate(_player);
         }
         else // otherwise only call FixedUpdate() of focus
-            _focus.AbilityFixedUpdate(player);
+            _focus.AbilityFixedUpdate(_player);
     }
 
 
@@ -129,7 +129,7 @@ public class AbilityManager : MonoBehaviour
             if (ability.GetType() == a?.GetType())
                 return false;
 
-        ability.AbilityStart(player, slotIndex);
+        ability.SetAdded(_player, slotIndex);
         abilities[slotIndex] = ability;
         return true;
     }
@@ -153,7 +153,7 @@ public class AbilityManager : MonoBehaviour
         if (slotIndex < 0 || slotIndex >= abilities.Count) return null;
 
         Ability ability = abilities[slotIndex];
-        ability?.End();
+        ability?.AbilityEnd(_player);
         abilities[slotIndex] = null;
         return ability;
     }
@@ -182,7 +182,7 @@ public class AbilityManager : MonoBehaviour
         if (count < abilities.Count) // remove abilities
         {
             List<Ability> removed = abilities.GetRange(count, abilities.Count - count);
-            foreach (Ability ability in removed) ability?.End();
+            foreach (Ability ability in removed) ability?.AbilityEnd(_player);
             abilities.RemoveRange(count, abilities.Count - count);
             return removed;
         }
