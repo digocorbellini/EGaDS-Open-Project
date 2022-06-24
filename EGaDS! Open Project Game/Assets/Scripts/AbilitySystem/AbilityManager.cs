@@ -204,22 +204,22 @@ public class AbilityManager : MonoBehaviour
     /// <summary>
     /// Get the total multiplier applied to player left-right movement speed, in tiles per second
     /// </summary>
-    public double GetSpeedMultiplier() => 
-        _abilities.Aggregate(1.0, (prod, ability) => prod * ability.SpeedMultiplier) *
-        _passiveAbilities.Aggregate(1.0, (prod, ability) => prod * ability.SpeedMultiplier);
+    public float GetSpeedMultiplier() => 
+        _abilities.Aggregate(1.0f, (prod, ability) => prod * (ability?.SpeedMultiplier ?? 1)) *
+        _passiveAbilities.Aggregate(1.0f, (prod, ability) => prod * (ability?.SpeedMultiplier ?? 1));
 
     /// <summary>
     /// Get the number of tiles added to player jump height
     /// </summary>
-    public double GetJumpHeightAddend() => 
-        _abilities.Aggregate(0.0, (sum, ability) => sum + ability.JumpHeightAddend) +
-        _passiveAbilities.Aggregate(0.0, (sum, ability) => sum + ability.JumpHeightAddend);
+    public float GetJumpHeightAddend() => 
+        _abilities.Aggregate(0.0f, (sum, ability) => sum + (ability?.JumpHeightAddend ?? 0)) +
+        _passiveAbilities.Aggregate(0.0f, (sum, ability) => sum + (ability?.JumpHeightAddend ?? 0));
 
     /// <summary>
     /// Get the total multiplier applied to player max fall speed, in tiles per second
     /// </summary>
-    public double FallSpeedMultiplier() => 
-        _abilities.Aggregate(1.0, (prod, ability) => prod * ability.FallSpeedMultiplier) *
-        _passiveAbilities.Aggregate(1.0, (prod, ability) => prod * ability.FallSpeedMultiplier);
+    public float GetFallSpeedMultiplier() => 
+        _abilities.Aggregate(1.0f, (prod, ability) => prod * (ability?.FallSpeedMultiplier) ?? 1) *
+        _passiveAbilities.Aggregate(1.0f, (prod, ability) => prod * (ability?.FallSpeedMultiplier ?? 1));
 
 }

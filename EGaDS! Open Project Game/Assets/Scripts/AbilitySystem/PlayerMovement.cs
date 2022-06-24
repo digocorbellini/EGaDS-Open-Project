@@ -6,14 +6,17 @@ public class PlayerMovement : MonoBehaviour
 {
     public float MovementSpeed = 1;
     public float JumpHeight = 1;
+    public float fallSpeed = 1;
     [SerializeField] private LayerMask groundLayerMask;
 
     private Rigidbody2D rigidbody;
     private BoxCollider2D collider;
+    private AbilityManager abilityManager;
     private void Start()
     {
         rigidbody = GetComponent<Rigidbody2D>();
         collider = GetComponent<BoxCollider2D>();
+        abilityManager = GetComponent<AbilityManager>();
     }
 
     
@@ -25,10 +28,14 @@ public class PlayerMovement : MonoBehaviour
         // better to set the player's position.
         transform.position += new Vector3(movement, 0, 0) * Time.deltaTime * MovementSpeed;
 
+        // limit fall speed
+        float finalFallSpeed = fallSpeed * abilityManager.GetFallSpeedMultiplier();
+        if (rigidbody.velocity.y < -finalFallSpeed)
+            rigidbody.velocity = new Vector2(rigidbody.velocity.x, -finalFallSpeed);
+
         bool isGrounded() 
         {
             RaycastHit2D raycastHit = Physics2D.Raycast(collider.bounds.center, Vector2.down, collider.bounds.extents.y*1.2f, groundLayerMask);
-
             
             if (raycastHit.collider == null)
             {

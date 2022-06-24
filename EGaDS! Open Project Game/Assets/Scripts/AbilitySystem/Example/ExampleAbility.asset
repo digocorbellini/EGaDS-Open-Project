@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _isPassive: 0
   _speedMultiplier: 1
-  _jumpHeightAddend: 10
+  _jumpHeightAddend: 0
   _fallSpeedMultiplier: 1
   _cooldownTime: 1
-  _riseSpeed: 5
+  _riseSpeed: 8

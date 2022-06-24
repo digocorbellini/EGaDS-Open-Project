@@ -24,17 +24,29 @@ public abstract class Ability : ScriptableObject
     /// <summary>
     /// Multiplier applied to player left-right movement speed, in tiles per second.
     /// </summary>
-    public float SpeedMultiplier => _speedMultiplier;
+    public float SpeedMultiplier 
+    { 
+        get => _speedMultiplier;
+        protected set { _speedMultiplier = value; }
+    }
 
     /// <summary>
     /// Number of tiles added to player jump height.
     /// </summary>
-    public float JumpHeightAddend => _jumpHeightAddend;
+    public float JumpHeightAddend
+    { 
+        get => _jumpHeightAddend;
+        protected set { _jumpHeightAddend = value; }
+    }
 
     /// <summary>
     /// Multiplier applied to the maximum speed the player falls at, in tiles per second.
     /// </summary>
-    public float FallSpeedMultiplier => _fallSpeedMultiplier;
+    public float FallSpeedMultiplier
+    { 
+        get => _fallSpeedMultiplier;
+        protected set { _fallSpeedMultiplier = value; }
+    }
 
     /// <summary>
     /// Called to signal that the ability has been added to the player
