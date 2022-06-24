@@ -288,6 +288,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MovementSpeed: 5
   JumpHeight: 4
+  groundLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!212 &1073689310
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -366,7 +369,7 @@ GameObject:
   - component: {fileID: 1643472717}
   - component: {fileID: 1643472716}
   - component: {fileID: 1643472715}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
