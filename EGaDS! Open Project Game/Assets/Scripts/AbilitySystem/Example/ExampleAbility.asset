@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa401e02749be4960bdf7eaf70c536c2, type: 3}
   m_Name: ExampleAbility
   m_EditorClassIdentifier: 
-  _isPassive: 0
   _speedMultiplier: 1
-  _jumpHeightAddend: 0
   _fallSpeedMultiplier: 1
+  _jumpHeightAddend: 0
+  _airJumpAddend: 0
   _cooldownTime: 1
-  _riseSpeed: 8
+  _riseSpeed: 5

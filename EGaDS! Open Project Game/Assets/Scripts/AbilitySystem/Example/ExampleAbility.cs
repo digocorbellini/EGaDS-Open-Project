@@ -4,7 +4,7 @@ using UnityEngine;
 
 
 [CreateAssetMenu(menuName = "Abilities/ExampleAbility")]
-public class ExampleAbility : Ability
+public class ExampleAbility : TriggeredAbility
 {
     [SerializeField]
     private float _cooldownTime = 1.0f;
@@ -13,6 +13,7 @@ public class ExampleAbility : Ability
     private float _riseSpeed = 5.0f;
 
     private float _timer;
+    private float _savedFallSpeedMultiplier;
 
     public override void AbilityStart(PlayerComponents player)
     {
@@ -33,6 +34,7 @@ public class ExampleAbility : Ability
             {
                 // if focus was successfully acquired:
                 _timer = _cooldownTime;
+                _savedFallSpeedMultiplier = FallSpeedMultiplier;
                 FallSpeedMultiplier = 0;
                 // player.rigidbody.velocity = new Vector2(player.rigidbody.velocity.x, 0);
             }
@@ -51,7 +53,7 @@ public class ExampleAbility : Ability
                 {
                     // if focus was successfully unacquired:
                     _timer = -1;
-                    FallSpeedMultiplier = 1;
+                    FallSpeedMultiplier = _savedFallSpeedMultiplier;
                 }
             }
         }

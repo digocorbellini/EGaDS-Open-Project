@@ -4,22 +4,16 @@ public abstract class Ability : ScriptableObject
 {
     private int _slotIndex = -1;
 
-    [SerializeField] private bool _isPassive = false;
     [SerializeField] private float _speedMultiplier = 1.0f;
-    [SerializeField] private float _jumpHeightAddend = 0.0f;
     [SerializeField] private float _fallSpeedMultiplier = 1.0f;
+    [SerializeField] private float _jumpHeightAddend = 0.0f;
+    [SerializeField] private int _airJumpAddend = 0;
 
     /// <summary>
     /// The slot index this ability is held in.
     /// If equal to -1, then the ability is not in a slot
     /// </summary>
     public int SlotIndex => _slotIndex;
-
-    /// <summary>
-    /// Abilities are grouped together depending on the value of IsPassive,
-    /// with separate maximum number of abilities a player can hold per group.
-    /// </summary>
-    public bool IsPassive => _isPassive;
 
     /// <summary>
     /// Multiplier applied to player left-right movement speed, in tiles per second.
@@ -31,21 +25,30 @@ public abstract class Ability : ScriptableObject
     }
 
     /// <summary>
-    /// Number of tiles added to player jump height.
-    /// </summary>
-    public float JumpHeightAddend
-    { 
-        get => _jumpHeightAddend;
-        protected set { _jumpHeightAddend = value; }
-    }
-
-    /// <summary>
     /// Multiplier applied to the maximum speed the player falls at, in tiles per second.
     /// </summary>
     public float FallSpeedMultiplier
     { 
         get => _fallSpeedMultiplier;
         protected set { _fallSpeedMultiplier = value; }
+    }
+
+    /// <summary>
+    /// Number of tiles added to player jump height.
+    /// </summary>
+    public float JumpHeightAddend
+    {
+        get => _jumpHeightAddend;
+        protected set { _jumpHeightAddend = value; }
+    }
+
+    /// <summary>
+    /// Number of additional air jumps the player can do
+    /// </summary>
+    public int AirJumpAddend
+    {
+        get => _airJumpAddend;
+        protected set { AirJumpAddend = value; }
     }
 
     /// <summary>
@@ -69,35 +72,6 @@ public abstract class Ability : ScriptableObject
         _slotIndex = -1;
         AbilityEnd(player);
     }
-
-    /// <summary>
-    /// Get key code corresponding to the slot this ability is in, 
-    /// or KeyCode.None if not in a slot
-    /// </summary>
-    private KeyCode GetKeyCode() 
-    {
-        if (SlotIndex < 0) return KeyCode.None;
-        if (IsPassive) return AbilityManager.PASSIVE_ABILITY_KEY_CODES[_slotIndex];
-        else return AbilityManager.ABILITY_KEY_CODES[_slotIndex];
-    }
-
-    /// <summary>
-    /// Returns true while the user 
-    /// holds down the key corresponding to this ability.
-    /// </summary>
-    public bool GetKey() => Input.GetKey(GetKeyCode());
-
-    /// <summary>
-    /// Returns true during the frame the user 
-    /// starts pressing down the key corresponding to this ability.
-    /// </summary>
-    public bool GetKeyDown() => Input.GetKeyDown(GetKeyCode());
-
-    /// <summary>
-    /// Returns true during the frame the user
-    /// releases the key corresponding to this ability.
-    /// </summary>
-    public bool GetKeyUp() => Input.GetKeyUp(GetKeyCode());
 
     /////////////////////////////////////////////////////////////////
     // Virtual methods start here
