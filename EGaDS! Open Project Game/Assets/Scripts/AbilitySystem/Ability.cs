@@ -52,6 +52,7 @@ public abstract class Ability : ScriptableObject
     }
 
     /// <summary>
+    /// USED ONLY IN ABILITY MANAGER
     /// Called to signal that the ability has been added to the player
     /// and the ability can now be usable.
     /// </summary>
@@ -64,6 +65,7 @@ public abstract class Ability : ScriptableObject
     }
 
     /// <summary>
+    /// USED ONLY IN ABILITY MANAGER
     /// Called to signal that the ability has been removed from the player
     /// </summary>
     /// <param name="player">The components of the player the ability has been removed from.</param>
