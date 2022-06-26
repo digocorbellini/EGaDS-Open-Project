@@ -19,6 +19,7 @@ public class ExampleAbility : TriggeredAbility
     private float _timer;
     private float _savedFallSpeedMultiplier;
 
+    // called when the player obtains the ability
     public override void AbilityStart(PlayerComponents player)
     {
         _isInCooldown = false;
@@ -26,49 +27,47 @@ public class ExampleAbility : TriggeredAbility
         _timer = -1;
     }
 
+    // called every frame while the player has the ability
     public override void AbilityUpdate(PlayerComponents player) 
     {
-        // check that ability isn't in cooldown
+        // check that ability isn't in cooldown or rising
+        // then detect key press and start ability
         if (!_isInCooldown && !_isRising && GetKeyDown() && player.abilityManager.AcquireFocus(this))
         {
-            Debug.Log("start rising");
             _isRising = true;
             _savedFallSpeedMultiplier = FallSpeedMultiplier;
             FallSpeedMultiplier = 0;
-
             _timer = _riseHeight / _riseSpeed;
         }
         if (_isRising)
         {
+            // move player up with speed
             player.transform.position += new Vector3(0, _riseSpeed*Time.deltaTime);
 
+            // decrement timer until end ability
             _timer -= Time.deltaTime;
-            if (_timer < 0)
+            if (_timer < 0 && player.abilityManager.UnacquireFocus(this))
             {
-                if (player.abilityManager.UnacquireFocus(this))
-                {
-                    Debug.Log("end rising");
-                    _isRising = false;
-                    FallSpeedMultiplier = _savedFallSpeedMultiplier;
+                _isRising = false;
+                FallSpeedMultiplier = _savedFallSpeedMultiplier;
 
-                    // start cooldown
-                    _isInCooldown = true;
-                    _timer = _cooldownTime;
-                }
+                // start cooldown
+                _isInCooldown = true;
+                _timer = _cooldownTime;
             }
         }
         if (_isInCooldown)
         {
-            // progress timer and end cooldown
+            // progress timer until end cooldown
             _timer -= Time.deltaTime;
             if (_timer < 0)
             {
-                Debug.Log("end cooldown");
                 _isInCooldown = false;
             }
         }
     }
 
+    // called when the ability is removed from the player
     public override void AbilityEnd(PlayerComponents player)
     {
         if (_isRising)
