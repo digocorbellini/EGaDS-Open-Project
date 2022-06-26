@@ -14,7 +14,12 @@ public class AbilityAdder : MonoBehaviour
     void Start()
     {
         AbilityManager abilityManager = gameObject.GetComponent<AbilityManager>();
-        abilityManager.SetTriggeredAbilityCount(1); // ability manager can now hold at most 1 ability
+
+        if (ability is TriggeredAbility) abilityManager.SetTriggeredAbilityCount(1); 
+        else if (ability is PassiveAbility) abilityManager.SetPassiveAbilityCount(1);
+        else return;
+        // ability manager can now hold at most 1 ability
+
         abilityManager.AddAbility(ability, 0);
     }
 }

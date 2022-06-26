@@ -16,5 +16,6 @@ MonoBehaviour:
   _fallSpeedMultiplier: 1
   _jumpHeightAddend: 0
   _airJumpAddend: 0
-  _cooldownTime: 1
+  _riseHeight: 8
   _riseSpeed: 5
+  _cooldownTime: 0.5
