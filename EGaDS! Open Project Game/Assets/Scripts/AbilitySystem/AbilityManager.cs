@@ -101,6 +101,7 @@ public class AbilityManager : MonoBehaviour
             _focus.AbilityFixedUpdate(_player);
     }
 
+
     private bool AddAbility<T>(List<T> abilities, T ability, int slotIndex) where T : Ability 
     {
         // check if ability is null
@@ -112,10 +113,11 @@ public class AbilityManager : MonoBehaviour
         // check if slotIndex is already occupied
         if (abilities[slotIndex] != null) return false;
 
-        // check if player already has the ability
-        foreach (Ability a in abilities)
-            if (ability.GetType() == a?.GetType())
-                return false;
+        // check if player already has the triggered ability
+        if (ability is TriggeredAbility)
+            foreach (Ability a in abilities)
+                if (ability.GetType() == a?.GetType())
+                    return false;
 
         ability.SetAdded(_player, slotIndex);
         abilities[slotIndex] = ability;
@@ -132,18 +134,14 @@ public class AbilityManager : MonoBehaviour
     {
         if (ability is TriggeredAbility) return AddAbility(_triggeredAbilities, ability as TriggeredAbility, slotIndex);
         else if (ability is PassiveAbility) return AddAbility(_passiveAbilities, ability as PassiveAbility, slotIndex);
-        return true;
+        return false;
     }
-
 
 
     /// <summary>
     ///     Remove the ability at the given slot
     /// </summary>
-    /// <param name="passive">
-    ///     If true, then remove from the passive abilities list.
-    ///     Otherwise remove from the normal abilities list.
-    /// </param>
+    /// <param name="abilities">The list of abilities to remove from.</param>
     /// <param name="slotIndex">The slot to remove from</param>
     /// <returns>The ability that was removed, or null if no ability was removed</returns>
     private T RemoveAbility<T>(List<T> abilities, int slotIndex) where T : Ability
@@ -164,6 +162,12 @@ public class AbilityManager : MonoBehaviour
     public Ability RemovePassiveAbility(int slotIndex) => RemoveAbility(_passiveAbilities, slotIndex);
 
 
+    /// <summary>
+    /// Set the size of the abilities list
+    /// </summary>
+    /// <param name="abilities">The list of abilities to update</param>
+    /// <param name="count">The size to update the list to</param>
+    /// <returns></returns>
     private List<T> SetAbilityCount<T>(List<T> abilities, int count) where T : Ability
     {
         if (count < abilities.Count) // remove abilities
@@ -181,15 +185,6 @@ public class AbilityManager : MonoBehaviour
         return new List<T>();
     }
 
-    /// <summary>
-    /// Set the size of the abilities list
-    /// </summary>
-    /// <param name="passive">
-    ///     If true, then update the passive abilities list.
-    ///     Otherwise update the normal abilities list.
-    /// </param>
-    /// <param name="count">The size to update the list to</param>
-    /// <returns></returns>
 
     /// <summary>Alias of <c>SetAbilityCount(false, count)</c></summary>
     public List<TriggeredAbility> SetTriggeredAbilityCount(int count) => SetAbilityCount(_triggeredAbilities, count);
