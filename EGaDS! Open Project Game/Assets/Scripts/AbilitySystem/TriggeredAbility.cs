@@ -10,9 +10,9 @@ public abstract class TriggeredAbility : Ability
     /// </summary>
     protected KeyCode GetKeyCode() 
     {
-        if (SlotIndex < 0 || SlotIndex > AbilityManager.ABILITY_KEY_CODES.Length) 
+        if (SlotIndex < 0 || SlotIndex > AbilityManager.TRIGGERED_ABILITY_KEY_CODES.Length) 
             return KeyCode.None;
-        else return AbilityManager.ABILITY_KEY_CODES[SlotIndex];
+        else return AbilityManager.TRIGGERED_ABILITY_KEY_CODES[SlotIndex];
     }
 
     /// <summary>

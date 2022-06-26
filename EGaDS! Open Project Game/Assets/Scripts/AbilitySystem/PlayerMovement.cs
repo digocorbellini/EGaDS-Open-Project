@@ -29,7 +29,7 @@ public class PlayerMovement : MonoBehaviour
         transform.position += new Vector3(movement, 0, 0) * Time.deltaTime * MovementSpeed;
 
         // limit fall speed
-        float finalFallSpeed = fallSpeed * abilityManager.GetFallSpeedMultiplier();
+        float finalFallSpeed = fallSpeed * abilityManager.FallSpeedMultiplier;
         if (rigidbody.velocity.y < -finalFallSpeed)
             rigidbody.velocity = new Vector2(rigidbody.velocity.x, -finalFallSpeed);
 

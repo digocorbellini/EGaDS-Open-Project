@@ -7,7 +7,7 @@ public class AbilityManager : MonoBehaviour
     /// <summary>
     /// Holds the keycodes that activate each ability slot the player holds
     /// </summary>
-    public static readonly KeyCode[] ABILITY_KEY_CODES = {
+    public static readonly KeyCode[] TRIGGERED_ABILITY_KEY_CODES = {
         KeyCode.H, KeyCode.J, KeyCode.K, KeyCode.L,
     };
 
@@ -28,6 +28,36 @@ public class AbilityManager : MonoBehaviour
     private PlayerComponents _player;
 
     private Ability _focus;
+
+
+    /// <summary>
+    /// The total multiplier applied to player left-right movement speed, in tiles per second
+    /// </summary>
+    public float SpeedMultiplier => 
+        _triggeredAbilities.Aggregate(1.0f, (prod, ability) => prod * (ability?.SpeedMultiplier ?? 1)) *
+        _passiveAbilities.Aggregate(1.0f, (prod, ability) => prod * (ability?.SpeedMultiplier ?? 1));
+
+    /// <summary>
+    /// The total multiplier applied to player max fall speed, in tiles per second
+    /// </summary>
+    public float FallSpeedMultiplier => 
+        _triggeredAbilities.Aggregate(1.0f, (prod, ability) => prod * (ability?.FallSpeedMultiplier) ?? 1) *
+        _passiveAbilities.Aggregate(1.0f, (prod, ability) => prod * (ability?.FallSpeedMultiplier ?? 1));
+
+    /// <summary>
+    /// The number of tiles added to player jump height
+    /// </summary>
+    public float JumpHeightAddend => 
+        _triggeredAbilities.Aggregate(0.0f, (sum, ability) => sum + (ability?.JumpHeightAddend ?? 0)) +
+        _passiveAbilities.Aggregate(0.0f, (sum, ability) => sum + (ability?.JumpHeightAddend ?? 0));
+
+    /// <summary>
+    /// The number of tiles added to player jump height
+    /// </summary>
+    public int AirJumpAddend => 
+        _triggeredAbilities.Aggregate(0, (sum, ability) => sum + (ability?.AirJumpAddend ?? 0)) +
+        _passiveAbilities.Aggregate(0, (sum, ability) => sum + (ability?.AirJumpAddend ?? 0));
+
 
     /// <summary>
     /// Acquire the focus on the passed in ability. When this is set, calls to 
@@ -64,6 +94,7 @@ public class AbilityManager : MonoBehaviour
 
         return focusUnacquired;
     }
+
 
     // Start is called before the first frame update
     void Start()
@@ -156,10 +187,10 @@ public class AbilityManager : MonoBehaviour
     }
 
     /// <summary>Alias of <c>RemoveAbility(false, slotIndex)</c></summary>
-    public Ability RemoveTriggeredAbility(int slotIndex) => RemoveAbility(_triggeredAbilities, slotIndex);
+    public TriggeredAbility RemoveTriggeredAbility(int slotIndex) => RemoveAbility(_triggeredAbilities, slotIndex);
 
     /// <summary>Alias of <c>RemoveAbility(true, slotIndex)</c></summary>
-    public Ability RemovePassiveAbility(int slotIndex) => RemoveAbility(_passiveAbilities, slotIndex);
+    public PassiveAbility RemovePassiveAbility(int slotIndex) => RemoveAbility(_passiveAbilities, slotIndex);
 
 
     /// <summary>
@@ -170,48 +201,30 @@ public class AbilityManager : MonoBehaviour
     /// <returns></returns>
     private List<T> SetAbilityCount<T>(List<T> abilities, int count) where T : Ability
     {
+        if (count < 0) count = 0;
+
+        List<T> removed = new List<T>();
+
         if (count < abilities.Count) // remove abilities
         {
-            List<T> removed = abilities.GetRange(count, abilities.Count - count);
-            foreach (T ability in removed) ability?.SetRemoved(_player);
-            abilities.RemoveRange(count, abilities.Count - count);
-            return removed;
+            while (abilities.Count > count)
+            {
+                T ability = abilities.Last();
+                ability?.SetRemoved(_player);
+                if (ability != null) removed.Insert(0, ability);
+                abilities.RemoveAt(abilities.Count-1);
+            }
         }
         else if (count > abilities.Count) // add empty ability slots
         {
             abilities.AddRange(new List<T>(new T[count - abilities.Count]));
-            return new List<T>();
         }
-        return new List<T>();
+        return removed;
     }
-
 
     /// <summary>Alias of <c>SetAbilityCount(false, count)</c></summary>
     public List<TriggeredAbility> SetTriggeredAbilityCount(int count) => SetAbilityCount(_triggeredAbilities, count);
 
     /// <summary>Alias of <c>SetAbilityCount(true, count)</c></summary>
     public List<PassiveAbility> SetPassiveAbilityCount(int count) => SetAbilityCount(_passiveAbilities, count);
-
-
-    /// <summary>
-    /// Get the total multiplier applied to player left-right movement speed, in tiles per second
-    /// </summary>
-    public float GetSpeedMultiplier() => 
-        _triggeredAbilities.Aggregate(1.0f, (prod, ability) => prod * (ability?.SpeedMultiplier ?? 1)) *
-        _passiveAbilities.Aggregate(1.0f, (prod, ability) => prod * (ability?.SpeedMultiplier ?? 1));
-
-    /// <summary>
-    /// Get the number of tiles added to player jump height
-    /// </summary>
-    public float GetJumpHeightAddend() => 
-        _triggeredAbilities.Aggregate(0.0f, (sum, ability) => sum + (ability?.JumpHeightAddend ?? 0)) +
-        _passiveAbilities.Aggregate(0.0f, (sum, ability) => sum + (ability?.JumpHeightAddend ?? 0));
-
-    /// <summary>
-    /// Get the total multiplier applied to player max fall speed, in tiles per second
-    /// </summary>
-    public float GetFallSpeedMultiplier() => 
-        _triggeredAbilities.Aggregate(1.0f, (prod, ability) => prod * (ability?.FallSpeedMultiplier) ?? 1) *
-        _passiveAbilities.Aggregate(1.0f, (prod, ability) => prod * (ability?.FallSpeedMultiplier ?? 1));
-
 }
