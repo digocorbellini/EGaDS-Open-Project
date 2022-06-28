@@ -4,17 +4,21 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private float _moveSpeed = 5;
-    [SerializeField] private float _fallSpeed = 10;
-    [SerializeField] private float _wallSlide = 5;
+    [SerializeField] private float _moveSpeed = 10;
+    [SerializeField] private float _fallSpeed = 20;
+    [SerializeField] private float _wallSlide = 10;
     [SerializeField] private float _jumpHeight = 4;
+
+    // time after wall jumping until left right movement is given back to player
+    [SerializeField] private float _wallJumpTime = 0.5f;
 
     [Header("Ground and Wall Detection")]
     [SerializeField] private LayerMask _groundLayerMask;
-    [SerializeField] private float _groundRaycastLength = 1.5f;
+    [SerializeField] private float _groundRaycastLength = .5f;
     [SerializeField] private float _groundDetectionWidth = 1f;
-    [SerializeField] private float _wallRaycastLength = 1f;
-    [SerializeField] private float _wallDetectionHeight = 1.5f;
+    [SerializeField] private float _wallRaycastLength = 0.3f;
+    [SerializeField] private float _wallDetectionWidth = 1f;
+    [SerializeField] private float _wallDetectionHeight = 0.7f;
 
     public float MoveSpeed => _moveSpeed * (_abilityManager?.SpeedMultiplier ?? 1);
     public float FallSpeed => _fallSpeed * (_abilityManager?.FallSpeedMultiplier ?? 1);
@@ -22,36 +26,36 @@ public class PlayerController : MonoBehaviour
     public float JumpHeight => _jumpHeight + (_abilityManager?.JumpHeightAddend ?? 0);
     public int AirJumpCount => _abilityManager?.AirJumpAddend ?? 0;
 
-    private Rigidbody2D _rigidbody;
-    private BoxCollider2D _collider;
-    private AbilityManager _abilityManager;
-
-    private float _moveDirection;
-    private bool _isJumping;
-
     public bool IsGrounded
     {
         get
         {
+            Vector3 feetPosition = transform.position - new Vector3(0, transform.localScale.y/2, 0);
             Vector3 edgeTransform = new Vector3(_groundDetectionWidth/2, 0, 0);
-            return Physics2D.Raycast(transform.position, Vector2.down, _groundRaycastLength, _groundLayerMask) 
-             || Physics2D.Raycast(transform.position-edgeTransform, Vector2.down, _groundRaycastLength, _groundLayerMask)
-             || Physics2D.Raycast(transform.position+edgeTransform, Vector2.down, _groundRaycastLength, _groundLayerMask);
+            return Physics2D.Raycast(feetPosition, Vector2.down, _groundRaycastLength, _groundLayerMask) 
+             || Physics2D.Raycast(feetPosition-edgeTransform, Vector2.down, _groundRaycastLength, _groundLayerMask)
+             || Physics2D.Raycast(feetPosition+edgeTransform, Vector2.down, _groundRaycastLength, _groundLayerMask);
         }
     }
 
-    public bool IsOnWall
+    private bool IsSideOnWall(Vector2 side)
     {
-        get
-        {
-            Vector3 feetPosition = transform.position - new Vector3(0, transform.localScale.y/2, 0);
-            Vector3 heightTransform = new Vector3(0, _wallDetectionHeight, 0);
-            return Physics2D.Raycast(feetPosition, Vector2.left, _wallRaycastLength, _groundLayerMask)
-             || Physics2D.Raycast(feetPosition+heightTransform, Vector2.left, _wallRaycastLength, _groundLayerMask)
-             || Physics2D.Raycast(feetPosition, Vector2.right, _wallRaycastLength, _groundLayerMask)
-             || Physics2D.Raycast(feetPosition+heightTransform, Vector2.right, _wallRaycastLength, _groundLayerMask);
-        }
+        Vector3 feetPosition = transform.position - new Vector3(0, transform.localScale.y/2, 0);
+        Vector3 edgeTransform = new Vector3(side.x*_wallDetectionWidth/2, 0, 0);
+        Vector3 heightTransform = new Vector3(0, _wallDetectionHeight, 0);
+        return Physics2D.Raycast(feetPosition+edgeTransform, side, _wallRaycastLength, _groundLayerMask)
+            || Physics2D.Raycast(feetPosition+edgeTransform+heightTransform, side, _wallRaycastLength, _groundLayerMask);
     }
+
+    public bool IsLeftOnWall => IsSideOnWall(Vector2.left);
+    public bool IsRightOnWall => IsSideOnWall(Vector2.right);
+    public bool IsOnWall => IsLeftOnWall || IsRightOnWall;
+
+    private Rigidbody2D _rigidbody;
+    private BoxCollider2D _collider;
+    private AbilityManager _abilityManager;
+
+    private float _wallJumpTimer = -1;
 
     private void Start()
     {
@@ -62,31 +66,32 @@ public class PlayerController : MonoBehaviour
     
     private void Update()
     {
-        
-        _moveDirection = Input.GetAxisRaw("Horizontal");
-        // be wary of setting the player's position directly. Can cause clipping and getting into unwanted areas.
-        // better to set the player's position.
+        if (_wallJumpTimer >= 0) _wallJumpTimer -= Time.deltaTime;
 
+        if (_wallJumpTimer < 0)
+        {
+            var moveDirection = Input.GetAxisRaw("Horizontal");
+            _rigidbody.velocity = new Vector2(moveDirection*MoveSpeed, _rigidbody.velocity.y);
+        }
 
-        _isJumping = _isJumping || Input.GetButtonDown("Jump") && (IsGrounded || IsOnWall);
+        if (Input.GetButtonDown("Jump"))
+        {
+            var jumpSpeed = Mathf.Sqrt(-2*Physics2D.gravity.y*_rigidbody.gravityScale*JumpHeight);
+            if (IsGrounded)
+                _rigidbody.velocity = new Vector2(_rigidbody.velocity.x, jumpSpeed);
+            else if (IsOnWall)
+            {
+                var wallJumpVelocity = IsLeftOnWall ? MoveSpeed : -MoveSpeed;
+                _rigidbody.velocity = new Vector2(wallJumpVelocity, jumpSpeed);
+                _wallJumpTimer = _wallJumpTime;
+            }
+        }
     }
 
     void FixedUpdate()
     {
-        // TODO: the *10 here is probably tile size. use a constant somewhere instead
-
-        _rigidbody.velocity = new Vector2(_moveDirection*10, _rigidbody.velocity.y);
-
-        if (_isJumping)
-        {
-            Debug.Log("Jump");
-            var jumpSpeed = Mathf.Sqrt(-2*Physics2D.gravity.y*_rigidbody.gravityScale*JumpHeight);
-            _rigidbody.velocity = new Vector2(_rigidbody.velocity.x, jumpSpeed);
-            _isJumping = false;
-        }
-
         // limit fall speed
-        float fallSpeed = FallSpeed;
+        float fallSpeed = IsOnWall ? WallSlideSpeed : FallSpeed;
         if (_rigidbody.velocity.y < -fallSpeed)
             _rigidbody.velocity = new Vector2(_rigidbody.velocity.x, -fallSpeed);
     }
@@ -95,18 +100,20 @@ public class PlayerController : MonoBehaviour
     {
         // Draw ground detection raycasts
         Gizmos.color = IsGrounded ? Color.green : Color.red;
+        Vector3 feetPosition = transform.position - new Vector3(0, transform.localScale.y/2, 0);
         Vector3 edgeTransform = new Vector3(_groundDetectionWidth/2, 0, 0);
-        Gizmos.DrawRay(transform.position, Vector2.down * _groundRaycastLength); 
-        Gizmos.DrawRay(transform.position-edgeTransform, Vector2.down * _groundRaycastLength);
-        Gizmos.DrawRay(transform.position+edgeTransform, Vector2.down * _groundRaycastLength);
+        Gizmos.DrawRay(feetPosition, Vector2.down * _groundRaycastLength); 
+        Gizmos.DrawRay(feetPosition-edgeTransform, Vector2.down * _groundRaycastLength);
+        Gizmos.DrawRay(feetPosition+edgeTransform, Vector2.down * _groundRaycastLength);
 
         // Draw wall detection raycasts
-        Gizmos.color = IsOnWall ? Color.green : Color.red;
-        Vector3 feetPosition = transform.position - new Vector3(0, transform.localScale.y/2, 0);
+        Vector3 sideTransform = new Vector3(_wallDetectionWidth/2, 0, 0);
         Vector3 heightTransform = new Vector3(0, _wallDetectionHeight, 0);
-        Gizmos.DrawRay(feetPosition, Vector2.left * _wallRaycastLength);
-        Gizmos.DrawRay(feetPosition+heightTransform, Vector2.left * _wallRaycastLength);
-        Gizmos.DrawRay(feetPosition, Vector2.right * _wallRaycastLength);
-        Gizmos.DrawRay(feetPosition+heightTransform, Vector2.right * _wallRaycastLength);
+        Gizmos.color = IsLeftOnWall ? Color.green : Color.red;
+        Gizmos.DrawRay(feetPosition-sideTransform, Vector2.left * _wallRaycastLength);
+        Gizmos.DrawRay(feetPosition-sideTransform+heightTransform, Vector2.left * _wallRaycastLength);
+        Gizmos.color = IsRightOnWall ? Color.green : Color.red;
+        Gizmos.DrawRay(feetPosition+sideTransform, Vector2.right * _wallRaycastLength);
+        Gizmos.DrawRay(feetPosition+sideTransform+heightTransform, Vector2.right * _wallRaycastLength);
     }
 }
