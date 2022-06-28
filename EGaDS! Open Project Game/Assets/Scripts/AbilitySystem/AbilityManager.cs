@@ -29,6 +29,8 @@ public class AbilityManager : MonoBehaviour
 
     private Ability _focus;
 
+    public IList<TriggeredAbility> TriggeredAbilities => _triggeredAbilities.AsReadOnly();
+    public IList<PassiveAbility> PassiveAbilities => _passiveAbilities.AsReadOnly();
 
     /// <summary>
     /// The total multiplier applied to player left-right movement speed, in tiles per second
