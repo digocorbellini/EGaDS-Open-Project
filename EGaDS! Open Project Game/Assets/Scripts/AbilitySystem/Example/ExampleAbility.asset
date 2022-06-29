@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speedMultiplier: 1
   _fallSpeedMultiplier: 1
+  _wallSlideMultiplier: 1
   _jumpHeightAddend: 0
   _airJumpAddend: 0
   _riseHeight: 8

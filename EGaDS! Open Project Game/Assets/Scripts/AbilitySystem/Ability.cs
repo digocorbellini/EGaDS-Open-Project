@@ -6,6 +6,7 @@ public abstract class Ability : ScriptableObject
 
     [SerializeField] private float _speedMultiplier = 1.0f;
     [SerializeField] private float _fallSpeedMultiplier = 1.0f;
+    [SerializeField] private float _wallSlideMultiplier = 1.0f;
     [SerializeField] private float _jumpHeightAddend = 0.0f;
     [SerializeField] private int _airJumpAddend = 0;
 
@@ -31,6 +32,15 @@ public abstract class Ability : ScriptableObject
     { 
         get => _fallSpeedMultiplier;
         protected set { _fallSpeedMultiplier = value; }
+    }
+
+    /// <summary>
+    /// Multiplier applied to the speed the player slides down while on a wall, in tiles per second.
+    /// </summary>
+    public float WallSlideMultiplier
+    { 
+        get => _wallSlideMultiplier;
+        protected set { _wallSlideMultiplier = value; }
     }
 
     /// <summary>

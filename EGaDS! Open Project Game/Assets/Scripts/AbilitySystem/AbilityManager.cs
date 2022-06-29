@@ -47,6 +47,13 @@ public class AbilityManager : MonoBehaviour
         _passiveAbilities.Aggregate(1.0f, (prod, ability) => prod * (ability?.FallSpeedMultiplier ?? 1));
 
     /// <summary>
+    /// The total multiplier applied to player wall slide speed, in tiles per second
+    /// </summary>
+    public float WallSlideMultiplier => 
+        _triggeredAbilities.Aggregate(1.0f, (prod, ability) => prod * (ability?.WallSlideMultiplier) ?? 1) *
+        _passiveAbilities.Aggregate(1.0f, (prod, ability) => prod * (ability?.WallSlideMultiplier ?? 1));
+
+    /// <summary>
     /// The number of tiles added to player jump height
     /// </summary>
     public float JumpHeightAddend => 
