@@ -4,7 +4,7 @@ using UnityEngine;
 
 public struct PlayerComponents
 {
-    public PlayerController movement { get; }
+    public PlayerController controller { get; }
     public Collider2D collider { get; }
     public Rigidbody2D rigidbody { get; }
     public AbilityManager abilityManager { get; }
@@ -14,7 +14,7 @@ public struct PlayerComponents
 
     public PlayerComponents(GameObject player) 
     {
-        movement = player.GetComponent<PlayerController>();
+        controller = player.GetComponent<PlayerController>();
         collider = player.GetComponent<Collider2D>();
         rigidbody = player.GetComponent<Rigidbody2D>();
         abilityManager = player.GetComponent<AbilityManager>();
