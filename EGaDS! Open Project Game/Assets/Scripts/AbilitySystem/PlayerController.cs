@@ -22,6 +22,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _wallDetectionWidth = .8f;
     [SerializeField] private float _wallDetectionHeight = .7f;
 
+    [Header("Dash Parameters")]
+    [SerializeField] private float _dashingPower = 24f; // Determines speed of the dash
+    [SerializeField] private float _dashingTime = 0.2f; // Determines how long the dash stays in effect
+    [SerializeField] private float _dashInputForgiveness = 0.1f; // Determines how late a direction can be pressed and still be processed after dash is pressed
+    [SerializeField] private TrailRenderer _trailRend; // Reference to the Trail Renderer
+    [HideInInspector] private bool _canDash = true; // Indicates if another dash is permitted
+    [HideInInspector] private bool _isDashing; // Indicates if player is currently dashing
+
+
 
     /// <summary>
     /// The maximum left-right movement speed of the player, in tiles per second
@@ -104,6 +113,33 @@ public class PlayerController : MonoBehaviour
     private float _wallJumpTimer = -1;
     private float _currentAirJumpCount = 0;
 
+    /// <summary>
+    /// Returns a Vector2 based on the direction of the keys pressed. For dash purposes
+    /// </summary>
+    private Vector2 CheckKeyDirection()
+    {
+        // Checks which movement inputs are being pressed (indicates direction for dash)
+        var xKeys = Input.GetAxisRaw("Horizontal");
+        var yKeys = Input.GetAxisRaw("Vertical");
+        return new Vector2(xKeys, yKeys).normalized;
+    }
+    /// <summary>
+    /// Dashes in a specified direction for a certain period of time (values adjustable by dash parameters in editor)
+    /// </summary>
+    private IEnumerator Dash()
+    {
+        _canDash = false;
+        _isDashing = true;
+        float originalGravity = _rigidbody.gravityScale; // Stores original gravity level for replacement
+        _rigidbody.gravityScale = 0f; // Sets gravity to 0 for dash
+        yield return new WaitForSeconds(_dashInputForgiveness); // Adds some delay to account for a late directional key press
+        _rigidbody.velocity = new Vector2(CheckKeyDirection().x * _dashingPower, CheckKeyDirection().y * _dashingPower); // Dashes in vector determined by CheckKeyDirection()
+        _trailRend.emitting = true; // Activate dash trail
+        yield return new WaitForSeconds(_dashingTime);
+        _rigidbody.gravityScale = originalGravity; // Restores original gravity value
+        _isDashing = false; // Deactivate dash trail
+        _trailRend.emitting = false;
+    }
 
     private void Start()
     {
@@ -114,6 +150,10 @@ public class PlayerController : MonoBehaviour
     
     private void Update()
     {
+        if (_isDashing) return; // Disables movement during dash
+
+        if (IsGrounded) _canDash = true; // Resets the ability to dash after grounding
+
         if (_wallJumpTimer >= 0) _wallJumpTimer -= Time.deltaTime;
 
         if (_wallJumpTimer < 0)
@@ -145,6 +185,10 @@ public class PlayerController : MonoBehaviour
                 _rigidbody.velocity = new Vector2(_rigidbody.velocity.x, jumpSpeed);
                 _currentAirJumpCount++;
             }
+        }
+        if (Input.GetKeyDown(KeyCode.LeftShift) && _canDash)
+        {
+            StartCoroutine(Dash()); // Initiates dash
         }
 
         // reset air jump count
