@@ -286,11 +286,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6eddb3064d6754519b9c64495515c085, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MovementSpeed: 5
-  JumpHeight: 4
-  groundLayerMask:
+  _moveSpeed: 10
+  _fallSpeed: 20
+  _wallSlide: 8
+  _jumpHeight: 4
+  _wallJumpTime: 0.3
+  _groundLayerMask:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 0
+  _groundRaycastLength: 0.5
+  _groundDetectionWidth: 0.8
+  _wallRaycastLength: 0.3
+  _wallDetectionWidth: 0.8
+  _wallDetectionHeight: 0.7
 --- !u!212 &1073689310
 SpriteRenderer:
   m_ObjectHideFlags: 0
