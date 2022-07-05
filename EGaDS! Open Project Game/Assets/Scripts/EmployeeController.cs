@@ -22,12 +22,12 @@ public class EmployeeController : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        checkWaypoint();
+        CheckWaypoint();
         transform.position = Vector2.MoveTowards(transform.position, _waypoints[nextWaypoint].position, _moveSpeed * Time.deltaTime);
     }
 
     // Checks if Employee has reached nextWaypoint and updates nextWaypoint
-    void checkWaypoint() {
+    void CheckWaypoint() {
         // change the checks to trigger on touching the waypoint objects
         if (Vector2.Distance(transform.position, _waypoints[nextWaypoint].position) < 1) {
             // if the employee should do something after reaching each waypoint, do that here
