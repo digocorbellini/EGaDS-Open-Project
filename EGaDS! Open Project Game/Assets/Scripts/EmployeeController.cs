@@ -12,7 +12,6 @@ public class EmployeeController : MonoBehaviour {
     // controls the amount of damage dealt to the player upon touching the employee
     [SerializeField] private int _damage = 1;
     private int nextWaypoint = 1;
-    public Rigidbody2D rb;
 
     // Start is called before the first frame update
     void Start() {
